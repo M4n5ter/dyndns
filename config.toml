@@ -1,0 +1,4 @@
+domain = "example.com"
+subdomain = "www"
+secret_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+secret_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
