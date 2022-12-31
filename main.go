@@ -140,13 +140,14 @@ func loadConfig() {
 		LOGGER.Panicf("配置文件读取失败,检查%s文件\n", configPath)
 	}
 
+	// 设置默认值
+	defaults.SetDefaults(&CFG)
+
+	// 解析配置文件到 CFG
 	err = toml.Unmarshal(config, &CFG)
 	if err != nil {
 		LOGGER.Panicln("配置文件解析失败: %s", err)
 	}
-
-	// 设置默认值
-	defaults.SetDefaults(&CFG)
 }
 
 // 获取 public ip TODO: 可以提供更多的 public ip 获取方式
