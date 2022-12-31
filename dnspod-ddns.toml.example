@@ -1,5 +1,10 @@
 domain = "example.com"
 subdomain = "www"
+# 拥有操作 dnspod api 权限的腾讯云账号的 secretId 和 secretKey
 secret_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 secret_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# 用于获取公网 IP 的 url(可选,默认值如下)
 #check_ip_url = "http://checkip.dyndns.com/"
+# -or-
+#check_ip_url = "http://ip.fm/"
+# etc...
