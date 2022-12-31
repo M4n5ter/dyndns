@@ -14,4 +14,8 @@ dnspod-ddns 是一个用于自动更新 DNSPod 域名解析记录的工具，可
 3. ~/.dnspod-ddns/dnspod-ddns.toml
 4. /etc/dnspod-ddns/dnspod-ddns.toml
 
+先执行如下命令编译代码得到 `dnspod-ddns`
+```bash
+$ go build -ldflags="-s -w" -o dnspod-ddns
+```
 确定配置文件存在且正确后，运行 `dnspod-ddns` 即可。
