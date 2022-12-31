@@ -11,8 +11,8 @@ dnspod-ddns 是一个用于自动更新 DNSPod 域名解析记录的工具，可
 加载配置文件的顺序为:
 1. 环境变量 `DNSPOD_DDNS_CONFIG` 指定的配置文件路径
 2. 当前目录下的 `dnspod-ddns.toml` 文件
-3. ~/.dnspod-ddns/dnspod-ddns.toml
-4. /etc/dnspod-ddns/dnspod-ddns.toml
+3. `~/.dnspod-ddns/dnspod-ddns.toml`
+4. `/etc/dnspod-ddns/dnspod-ddns.toml`
 
 先执行如下命令编译代码得到 `dnspod-ddns`
 ```bash
