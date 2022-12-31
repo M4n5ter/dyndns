@@ -1,4 +1,4 @@
-module dnspod-auto-record
+module dnspod-ddns
 
 go 1.19
 
@@ -7,3 +7,5 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.561
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod v1.0.561
 )
+
+require github.com/mcuadros/go-defaults v1.2.0 // indirect

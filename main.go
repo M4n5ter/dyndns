@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/mcuadros/go-defaults"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
@@ -11,6 +12,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 )
 
@@ -30,6 +32,8 @@ type Config struct {
 	SecretId string `toml:"secret_id"`
 	// dnspod 的 SecretKey
 	SecretKey string `toml:"secret_key"`
+	// 用于检查 IP 的 URL
+	CheckIpUrl string `toml:"check_ip_url" default:"http://checkip.dyndns.com/"`
 }
 
 func main() {
@@ -107,30 +111,51 @@ func initConfig() {
 	LOGGER.Println("获取公网IP成功: ", PUBLIC_IP)
 }
 
-// 加载配置文件 TODO: 优化配置文件加载，如从环境变量，命令行参数等加载
+// 加载配置文件
 func loadConfig() {
-	fs, err := os.Open("config.toml")
+	// 优先从环境变量获取配置文件路径
+	// 如果没有则从当前目录下加载 dnspod-ddns.toml
+	// 如果当前目录下没有 dnspod-ddns.toml 则加载 ~/.dnspod-ddns/dnspod-ddns.toml
+	// 上述路径都没有则加载 /etc/dnspod-ddns/dnspod-ddns.toml
+	configPath := os.Getenv("DNSPOD_DDNS_CONFIG")
+	if configPath == "" {
+		// 当前目录下
+		configPath = "./dnspod-ddns.toml"
+		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+			// 当前目录下没有则加载 ~/.dnspod-ddns/dnspod-ddns.toml
+			configPath = filepath.Join(os.Getenv("HOME"), ".dnspod-ddns", "dnspod-ddns.toml")
+			if _, err := os.Stat(configPath); os.IsNotExist(err) {
+				// ~/.dnspod-ddns/dnspod-ddns.toml 不存在则加载 /etc/dnspod-ddns/dnspod-ddns.toml
+				configPath = "/etc/dnspod-ddns/dnspod-ddns.toml"
+			}
+		}
+	}
+	fs, err := os.Open(configPath)
 	defer fs.Close()
 	if err != nil {
-		LOGGER.Panicln("配置文件打开失败,请检查当前目录下的 config.toml 文件的状态")
+		LOGGER.Panicf("配置文件打开失败,请检查%s文件的状态\n", configPath)
 	}
 	config, err := io.ReadAll(fs)
 	if err != nil {
-		LOGGER.Panicln("配置文件读取失败,检查当前目录下的 config.toml 文件")
+		LOGGER.Panicf("配置文件读取失败,检查%s文件\n", configPath)
 	}
 
 	err = toml.Unmarshal(config, &CFG)
 	if err != nil {
 		LOGGER.Panicln("配置文件解析失败: %s", err)
 	}
+
+	// 设置默认值
+	defaults.SetDefaults(&CFG)
 }
 
 // 获取 public ip TODO: 可以提供更多的 public ip 获取方式
 func getPublicIp() (ip net.Addr, err error) {
-	response, err := http.Get("http://ip.fm/")
+	LOGGER.Printf("正在从%s获取公网IP,请稍后...\n", CFG.CheckIpUrl)
+	response, err := http.Get(CFG.CheckIpUrl)
 	defer response.Body.Close()
 	if err != nil {
-		LOGGER.Printf("请求 ip.fm 失败: %s\n", err)
+		LOGGER.Printf("请求 %s 失败: %s\n", CFG.CheckIpUrl, err)
 		return nil, err
 	}
 

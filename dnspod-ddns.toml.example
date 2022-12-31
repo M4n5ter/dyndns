@@ -1,4 +1,5 @@
 domain = "example.com"
 subdomain = "www"
 secret_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-secret_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+secret_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#check_ip_url = "http://checkip.dyndns.com/"
