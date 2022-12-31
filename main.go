@@ -146,7 +146,7 @@ func loadConfig() {
 	// 解析配置文件到 CFG
 	err = toml.Unmarshal(config, &CFG)
 	if err != nil {
-		LOGGER.Panicln("配置文件解析失败: %s", err)
+		LOGGER.Panicf("配置文件解析失败: %s\n", err)
 	}
 }
 
