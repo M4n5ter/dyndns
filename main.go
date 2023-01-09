@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 )
 
 var CFG Config
@@ -118,23 +119,7 @@ func initConfig() {
 
 // 加载配置文件
 func loadConfig() {
-	// 优先从环境变量获取配置文件路径
-	// 如果没有则从当前目录下加载 dnspod-ddns.toml
-	// 如果当前目录下没有 dnspod-ddns.toml 则加载 ~/.dnspod-ddns/dnspod-ddns.toml
-	// 上述路径都没有则加载 /etc/dnspod-ddns/dnspod-ddns.toml
-	configPath := os.Getenv("DNSPOD_DDNS_CONFIG")
-	if configPath == "" {
-		// 当前目录下
-		configPath = "./dnspod-ddns.toml"
-		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			// 当前目录下没有则加载 ~/.dnspod-ddns/dnspod-ddns.toml
-			configPath = filepath.Join(os.Getenv("HOME"), ".dnspod-ddns", "dnspod-ddns.toml")
-			if _, err := os.Stat(configPath); os.IsNotExist(err) {
-				// ~/.dnspod-ddns/dnspod-ddns.toml 不存在则加载 /etc/dnspod-ddns/dnspod-ddns.toml
-				configPath = "/etc/dnspod-ddns/dnspod-ddns.toml"
-			}
-		}
-	}
+	configPath := getConfigPath("dnspod-ddns.toml", "dnspod-ddns", "DNSPOD_DDNS_CONFIG")
 	fs, err := os.Open(configPath)
 	defer fs.Close()
 	if err != nil {
@@ -149,6 +134,59 @@ func loadConfig() {
 	err = toml.Unmarshal(config, &CFG)
 	if err != nil {
 		LOGGER.Panicf("配置文件解析失败: %s\n", err)
+	}
+
+	checkConfig(&CFG)
+}
+
+// 获取配置文件路径
+// configName 为配置文件名（例如 "dnspod-ddns.toml"）,
+// configDir 为期望的包含配置文件的目录（例如 "dnspod-ddns"，在本函数中具体会被指定为 "~/.dnspod-ddns" 和 "/etc/dnspod-ddns"或者 "%APPDATA%/dnspod-ddns"）,
+// env 为环境变量名（例如 "DNSPOD_DDNS_CONFIG"）,
+func getConfigPath(configName, configDir, env string) string {
+	// 优先从环境变量获取配置文件路径
+	// 如果没有则从当前目录下加载 configName
+	// 如果当前目录下没有 configName 则加载 ~/.configDir/configName
+	// 上述路径都没有则加载 /etc/configDir/configName（类 Unix）或者 %APPDATA%/configDir/configName（Windows）
+	configPath := os.Getenv(env)
+	if configPath == "" {
+		// 当前目录下
+		configPath = configName
+		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+			// 当前目录下没有则加载 ~/.configDir/configName
+			configPath = filepath.Join(os.Getenv("HOME"), "."+configDir, configName)
+
+			// ~/.configDir/configName 不存在
+			if _, err := os.Stat(configPath); os.IsNotExist(err) {
+				// 如果是 windows 系统则加载 %APPDATA%/configDir/configName
+				if runtime.GOOS == "windows" {
+					configPath = filepath.Join(os.Getenv("APPDATA"), configDir, configName)
+				} else {
+					// 如果是类 Unix 系统则加载 /etc/configDir/configName
+					configPath = filepath.Join("/etc", configDir, configName)
+				}
+			}
+		}
+	}
+	return configPath
+}
+
+// 检查配置文件是否提供了所有必须的配置
+func checkConfig(c *Config) {
+	if c == nil {
+		LOGGER.Panic("配置文件为空")
+	}
+	if c.Domain == "" {
+		LOGGER.Panic("配置文件缺少域名(domain)配置")
+	}
+	if c.SubDomain == "" {
+		LOGGER.Panic("配置文件缺少子域名(subdomain)配置")
+	}
+	if c.SecretId == "" {
+		LOGGER.Panic("配置文件缺少 secret_id 配置")
+	}
+	if c.SecretKey == "" {
+		LOGGER.Panic("配置文件缺少 secret_key 配置")
 	}
 }
 
