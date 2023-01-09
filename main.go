@@ -139,7 +139,7 @@ func loadConfig() {
 	checkConfig(&CFG)
 }
 
-// 获取配置文件路径
+// 获取配置文件路径: 优先级: 环境变量 > 默认路径(当前目录,用户目录,系统目录)
 // configName 为配置文件名（例如 "dnspod-ddns.toml"）,
 // configDir 为期望的包含配置文件的目录（例如 "dnspod-ddns"，在本函数中具体会被指定为 "~/.dnspod-ddns" 和 "/etc/dnspod-ddns"或者 "%APPDATA%/dnspod-ddns"）,
 // env 为环境变量名（例如 "DNSPOD_DDNS_CONFIG"）,
