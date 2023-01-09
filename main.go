@@ -36,6 +36,11 @@ type Config struct {
 	CheckIpUrl string `toml:"check_ip_url" default:"http://checkip.dyndns.com/"`
 }
 
+func init() {
+	// 设置默认值
+	defaults.SetDefaults(&CFG)
+}
+
 func main() {
 	initConfig()
 
@@ -139,9 +144,6 @@ func loadConfig() {
 	if err != nil {
 		LOGGER.Panicf("配置文件读取失败,检查%s文件\n", configPath)
 	}
-
-	// 设置默认值
-	defaults.SetDefaults(&CFG)
 
 	// 解析配置文件到 CFG
 	err = toml.Unmarshal(config, &CFG)
