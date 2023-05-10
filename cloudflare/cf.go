@@ -50,7 +50,7 @@ func DDNS(publicIp net.Addr, conf Config) {
 	}, &ListResponse{}).(*ListResponse)
 	if listResp.Success {
 		for _, record := range listResp.Result {
-			if record.Content == publicIp.String() {
+			if record.Name == conf.Name && record.Content == publicIp.String() {
 				needUpdate = false
 				needCreate = false
 				conf.RecordId = record.Id
