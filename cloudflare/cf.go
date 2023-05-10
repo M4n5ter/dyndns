@@ -106,13 +106,13 @@ func DDNS(publicIp net.Addr, conf Config) {
 
 func NewRequest(conf Config, method string) *Request {
 	return &Request{
-		apiUrl: newApiUrl(conf.ZoneId, conf.RecordId),
+		apiUrl: NewApiUrl(conf.ZoneId, conf.RecordId),
 		apiKey: conf.ApiKey,
 		method: method,
 	}
 }
 
-func newApiUrl(zid, rid string) string {
+func NewApiUrl(zid, rid string) string {
 	if zid == "" {
 		panic("zone id is required")
 	}
