@@ -16,11 +16,11 @@ secret_id = "1234567890abcdef1234567890abcdef"
 secret_key = "1234567890abcdef1234567890abcdef"
 
 [cloudflare]
-# required
+# required，https://dash.cloudflare.com/profile/api-tokens
 api_key = "1234567890abcdef1234567890abcdef"
 # required
 zone_id = "1234567890abcdef1234567890abcdef"
-# optional
+# optional，如果不指定，将会自动获取
 #record_id = "1234567890abcdef1234567890abcdef"
 # required
 name = "test.example.com"
