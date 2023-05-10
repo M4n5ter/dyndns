@@ -1,0 +1,36 @@
+# optional
+# 用于获取公网 IP 的 url(可选,默认值如下)
+#check_ip_url = "http://checkip.dyndns.com/"
+# -or-
+#check_ip_url = "http://ip.fm/"
+# etc...
+
+[dnspod]
+# required
+domain = "example.com"
+# required
+subdomain = "test"
+# required
+# 拥有操作 dnspod api 权限的腾讯云账号的 secretId 和 secretKey
+secret_id = "1234567890abcdef1234567890abcdef"
+secret_key = "1234567890abcdef1234567890abcdef"
+
+[cloudflare]
+# required
+api_key = "1234567890abcdef1234567890abcdef"
+# required
+zone_id = "1234567890abcdef1234567890abcdef"
+# optional
+#record_id = "1234567890abcdef1234567890abcdef"
+# required
+name = "test.example.com"
+# required
+type = "A"
+# optional
+proxied = true
+# optional, 1 代表 auto,范围：60 ~ 86400(企业 zones 最小可以 30)
+ttl = 1
+# optional, comment 表示备注
+comment = "test"
+
+
