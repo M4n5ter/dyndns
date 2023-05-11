@@ -8,7 +8,7 @@ dyndns 是一个用于自动更新域名解析记录的工具，可以用于动�
 
 ## 使用方法
 
-修改 `dyndns.sample.toml` 文件后并去除`.example`即可使用，也可以稍微修改下代码，推荐配合 crontab 来工作。
+修改 `dyndns.sample.toml` 文件后并去除`.sample`即可使用，也可以稍微修改下代码，推荐配合 crontab 来工作。
 加载配置文件的顺序为:
 1. 环境变量 `DYNDNS_CONFIG` 指定的配置文件路径
 2. 当前目录下的 `dyndns.toml` 文件
