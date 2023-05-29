@@ -3,7 +3,7 @@ module dyndns
 go 1.19
 
 require (
-	github.com/pelletier/go-toml/v2 v2.0.7
+	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.656
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod v1.0.656
 
