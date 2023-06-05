@@ -2,20 +2,17 @@ package config
 
 import (
 	"fmt"
-	// 第三方
-	"github.com/pelletier/go-toml/v2"
-	"golang.org/x/exp/slog"
-
-	// 本地
-	"dyndns/cloudflare"
-	"dyndns/dnspod"
-	"dyndns/utils/log"
-
-	// 标准库
 	"io"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/pelletier/go-toml/v2"
+	"golang.org/x/exp/slog"
+
+	"github.com/m4n5ter/dyndns/cloudflare"
+	"github.com/m4n5ter/dyndns/dnspod"
+	"github.com/m4n5ter/dyndns/utils/log"
 )
 
 var Logger *slog.Logger

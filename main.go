@@ -1,24 +1,20 @@
 package main
 
 import (
-	"dyndns/utils/log"
 	"fmt"
-
-	// 第三方
-	"golang.org/x/exp/slog"
-	"os"
-
-	// 本地
-	cf "dyndns/cloudflare"
-	"dyndns/config"
-	dp "dyndns/dnspod"
-	"sync"
-
-	// 标准库
 	"io"
 	"net"
 	"net/http"
+	"os"
 	"regexp"
+	"sync"
+
+	"golang.org/x/exp/slog"
+
+	cf "github.com/m4n5ter/dyndns/cloudflare"
+	"github.com/m4n5ter/dyndns/config"
+	dp "github.com/m4n5ter/dyndns/dnspod"
+	"github.com/m4n5ter/dyndns/utils/log"
 )
 
 var (

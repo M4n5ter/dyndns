@@ -1,8 +1,9 @@
 package cloudflare_test
 
 import (
-	"dyndns/cloudflare"
 	"testing"
+
+	"github.com/m4n5ter/dyndns/cloudflare"
 )
 
 func TestNewApiUrl(t *testing.T) {

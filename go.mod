@@ -1,4 +1,4 @@
-module dyndns
+module github.com/m4n5ter/dyndns
 
 go 1.19
 

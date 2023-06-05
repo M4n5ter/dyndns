@@ -2,13 +2,15 @@ package cloudflare
 
 import (
 	"bytes"
-	"dyndns/utils/log"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
-	"golang.org/x/exp/slog"
 	"io"
 	"net"
 	"net/http"
+
+	jsoniter "github.com/json-iterator/go"
+	"golang.org/x/exp/slog"
+
+	"github.com/m4n5ter/dyndns/utils/log"
 )
 
 var (

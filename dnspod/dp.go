@@ -1,17 +1,15 @@
 package dnspod
 
 import (
-	// 第三方
+	"net"
+
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	dnspod "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod/v20210323"
 	"golang.org/x/exp/slog"
 
-	// 本地
-	"dyndns/utils/log"
-	// 标准库
-	"net"
+	"github.com/m4n5ter/dyndns/utils/log"
 )
 
 var Logger *slog.Logger
