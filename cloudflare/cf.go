@@ -8,14 +8,12 @@ import (
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
-	"golang.org/x/exp/slog"
-
-	"github.com/m4n5ter/dyndns/utils/log"
+	"github.com/m4n5ter/log"
 )
 
 var (
 	ApiPre = "https://api.cloudflare.com/client/v4/"
-	Logger *slog.Logger
+	Logger *log.Logger
 )
 
 type Config struct {
@@ -116,7 +114,7 @@ func NewRequest(conf Config, method string) *Request {
 
 func NewApiUrl(zid, rid string) string {
 	if zid == "" {
-		panic("zone id is required")
+		Logger.Panic("zone id is required")
 	}
 
 	var rUri string
@@ -129,26 +127,26 @@ func NewApiUrl(zid, rid string) string {
 func (c *Request) Do(body any, response any) any {
 	payload, err := jsoniter.Marshal(body)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("json marshal error: %s", err))
+		Logger.Panicf("json marshal error: %s", err)
 	}
 
 	req, err := http.NewRequest(c.method, c.apiUrl, bytes.NewReader(payload))
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("new request error: %s", err))
+		Logger.Panicf("new request error: %s", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil || resp == nil {
-		log.LogPanic(Logger, fmt.Sprintf("do request error: %s", err))
+		Logger.Panicf("do request error: %s", err)
 	}
 	defer resp.Body.Close()
 
 	respBody, _ := io.ReadAll(resp.Body)
 	err = jsoniter.Unmarshal(respBody, response)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("json unmarshal error: %s", err))
+		Logger.Panicf("json unmarshal error: %s", err)
 	}
 
 	return response
@@ -157,18 +155,18 @@ func (c *Request) Do(body any, response any) any {
 // CheckConfig 检查配置文件是否提供了所有必须的配置
 func (c *Config) CheckConfig() {
 	if c == nil {
-		log.LogPanic(Logger, "配置文件为空")
+		Logger.Panic("配置文件为空")
 	}
 	if c.ApiKey == "" {
-		log.LogPanic(Logger, "api_key 不能为空")
+		Logger.Panic("api_key 不能为空")
 	}
 	if c.ZoneId == "" {
-		log.LogPanic(Logger, "zone_id 不能为空")
+		Logger.Panic("zone_id 不能为空")
 	}
 	if c.Name == "" {
-		log.LogPanic(Logger, "name 不能为空")
+		Logger.Panic("name 不能为空")
 	}
 	if c.Type == "" {
-		log.LogPanic(Logger, "type 不能为空")
+		Logger.Panic("type 不能为空")
 	}
 }

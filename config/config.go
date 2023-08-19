@@ -1,21 +1,19 @@
 package config
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"runtime"
 
 	"github.com/pelletier/go-toml/v2"
-	"golang.org/x/exp/slog"
 
 	"github.com/m4n5ter/dyndns/cloudflare"
 	"github.com/m4n5ter/dyndns/dnspod"
-	"github.com/m4n5ter/dyndns/utils/log"
+	"github.com/m4n5ter/log"
 )
 
-var Logger *slog.Logger
+var Logger *log.Logger
 
 type Config struct {
 	// 用于检查 IP 的 URL
@@ -30,17 +28,17 @@ func Load(conf *Config) {
 	fs, err := os.Open(configPath)
 	defer fs.Close()
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("配置文件打开失败,请检查%s文件的状态\n", configPath))
+		Logger.Panicf("配置文件打开失败,请检查%s文件的状态\n", configPath)
 	}
 	config, err := io.ReadAll(fs)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("配置文件读取失败,检查%s文件\n", configPath))
+		Logger.Panicf("配置文件读取失败,检查%s文件\n", configPath)
 	}
 
 	// 解析配置文件到 Conf
 	err = toml.Unmarshal(config, &conf)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("配置文件解析失败: %s\n", err))
+		Logger.Panicf("配置文件解析失败: %s\n", err)
 	}
 
 	conf.check()

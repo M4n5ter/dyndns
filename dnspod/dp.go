@@ -3,16 +3,14 @@ package dnspod
 import (
 	"net"
 
+	"github.com/m4n5ter/log"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	dnspod "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod/v20210323"
-	"golang.org/x/exp/slog"
-
-	"github.com/m4n5ter/dyndns/utils/log"
 )
 
-var Logger *slog.Logger
+var Logger *log.Logger
 
 type Config struct {
 	// 域名
@@ -92,19 +90,11 @@ func DDNS(publicIp net.Addr, conf Config) {
 
 // CheckConfig 检查配置文件是否提供了所有必须的配置
 func (c *Config) CheckConfig() {
-	if c == nil {
-		log.LogPanic(Logger, "配置文件为空")
-	}
-	if c.Domain == "" {
-		log.LogPanic(Logger, "配置文件为空")
-	}
-	if c.SubDomain == "" {
-		log.LogPanic(Logger, "配置文件为空")
-	}
-	if c.SecretId == "" {
-		log.LogPanic(Logger, "配置文件为空")
-	}
-	if c.SecretKey == "" {
-		log.LogPanic(Logger, "配置文件为空")
+	if c == nil ||
+		c.Domain == "" ||
+		c.SubDomain == "" ||
+		c.SecretId == "" ||
+		c.SecretKey == "" {
+		Logger.Panic("配置文件为空")
 	}
 }

@@ -1,28 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 	"regexp"
 	"sync"
 	"time"
 
-	"golang.org/x/exp/slog"
-
 	cf "github.com/m4n5ter/dyndns/cloudflare"
 	"github.com/m4n5ter/dyndns/config"
 	dp "github.com/m4n5ter/dyndns/dnspod"
-	"github.com/m4n5ter/dyndns/utils/log"
+	"github.com/m4n5ter/log"
 )
 
 var (
 	Config   config.Config
 	PublicIp net.Addr
-	Logger   = slog.New(slog.NewTextHandler(os.Stderr)).WithGroup("MAIN")
+	Logger   = log.Default().WithGroup("MAIN")
 	wg       sync.WaitGroup
 )
 
@@ -69,13 +65,13 @@ func getPublicIp() net.Addr {
 
 	response, err := client.Get(Config.CheckIpUrl)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("请求 %s 失败: %v\n", Config.CheckIpUrl, err))
+		Logger.Panicf("请求 %s 失败: %v\n", Config.CheckIpUrl, err)
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("获取公网IP失败: %s\n", err))
+		Logger.Panicf("获取公网IP失败: %s\n", err)
 	}
 
 	re := regexp.MustCompile(`(?m)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})`)
@@ -83,7 +79,7 @@ func getPublicIp() net.Addr {
 	pip, err := net.ResolveIPAddr("ip", ipStr)
 	if err != nil {
 
-		log.LogPanic(Logger, fmt.Sprintf("解析公网IP失败: %s\n", err))
+		Logger.Panicf("解析公网IP失败: %s\n", err)
 	}
 	Logger.Info("公网IP获取成功:", "ip", pip)
 	return pip
@@ -93,13 +89,13 @@ func getPublicIp() net.Addr {
 func connectUrl(uri string) net.Conn {
 	parsedUrl, err := url.Parse(uri)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("解析 %s 失败: %v\n", uri, err))
+		Logger.Panicf("解析 %s 失败: %v\n", uri, err)
 	}
 
 	host := parsedUrl.Hostname()
 	ips, err := net.LookupIP(host)
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("Lookup %s 失败: %v\n", host, err))
+		Logger.Panicf("Lookup %s 失败: %v\n", host, err)
 	}
 
 	var ip net.IP
@@ -117,7 +113,7 @@ func connectUrl(uri string) net.Conn {
 
 	conn, err := net.Dial("tcp", ip.String()+":443")
 	if err != nil {
-		log.LogPanic(Logger, fmt.Sprintf("连接 %s 失败: %v\n", Config.CheckIpUrl, err))
+		Logger.Panicf("连接 %s 失败: %v\n", Config.CheckIpUrl, err)
 	}
 
 	return conn
