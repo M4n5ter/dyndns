@@ -95,6 +95,6 @@ func (c *Config) CheckConfig() {
 		c.SubDomain == "" ||
 		c.SecretId == "" ||
 		c.SecretKey == "" {
-		Logger.Panic("配置文件为空")
+		Logger.Panic("缺少必须字段")
 	}
 }
